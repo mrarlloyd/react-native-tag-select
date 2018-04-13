@@ -4,6 +4,11 @@
 
 A simple tag component to act as radio button / checkbox
 
+Own fork: added 2 new properties
+
+- disabled: disable onPress handler
+- onMaxSwitchToNext: if max value reached switch to next item and remove latest 
+
 ## Features
 
 - Suports Array of objects or array of strings
