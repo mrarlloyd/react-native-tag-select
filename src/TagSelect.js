@@ -22,6 +22,10 @@ class TagSelect extends React.Component {
 
     // validations
     max: PropTypes.number,
+    onMaxSwitchToNext: PropTypes.bool,
+
+    // disable selection
+    disabled: PropTypes.bool,
 
     // Callbacks
     onMaxError: PropTypes.func,
@@ -40,6 +44,9 @@ class TagSelect extends React.Component {
     data: [],
 
     max: null,
+    onMaxSwitchToNext: false,
+
+    disabled: false,
 
     onMaxError: null,
     onItemPress: null,
@@ -90,7 +97,7 @@ class TagSelect extends React.Component {
   handleSelectItem = (item) => {
     const key = item[this.props.keyAttr] || item
 
-    const value = { ...this.state.value }
+    let value = { ...this.state.value }
     const found = this.state.value[key]
 
     // Item is on array, so user is removing the selection
@@ -98,13 +105,17 @@ class TagSelect extends React.Component {
       delete value[key]
     } else {
       // User is adding but has reached the max number permitted
-      if (this.props.max && this.totalSelected >= this.props.max) {
+      if (this.props.max && this.totalSelected >= this.props.max && !this.props.onMaxSwitchToNext) {
         if (this.props.onMaxError) {
           return this.props.onMaxError()
         }
+      } else if (this.props.max && this.totalSelected >= this.props.max && this.props.onMaxSwitchToNext) {
+        value = []; 
+        value[key] = item
+      } else {
+        value[key] = item
       }
 
-      value[key] = item
     }
 
     return this.setState({ value }, () => {
@@ -128,7 +139,7 @@ class TagSelect extends React.Component {
               {...this.props}
               label={i[this.props.labelAttr] ? i[this.props.labelAttr] : i}
               key={i[this.props.keyAttr] ? i[this.props.keyAttr] : i}
-              onPress={this.handleSelectItem.bind(this, i)}
+              onPress={this.props.disabled ? () => {} : this.handleSelectItem.bind(this, i)}
               selected={(this.state.value[i[this.props.keyAttr]] || this.state.value[i]) && true}
             />
           )
