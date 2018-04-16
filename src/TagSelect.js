@@ -61,7 +61,7 @@ class TagSelect extends React.Component {
   componentDidMount () {
     const value = {}
     this.props.value.forEach((val) => {
-      value[val[[this.props.keyAttr]] || val] = val
+      value[val[this.props.keyAttr] || val] = val
     })
 
     this.setState({ value })
