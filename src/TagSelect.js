@@ -1,10 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  View,
-  ViewPropTypes,
-  StyleSheet
-} from 'react-native'
+import { View, ViewPropTypes, StyleSheet } from 'react-native'
 
 import TagSelectItem from './TagSelectItem'
 
@@ -32,7 +28,7 @@ class TagSelect extends React.Component {
     onItemPress: PropTypes.func,
 
     // Styles
-    containerStyle: ViewPropTypes.style
+    containerStyle: ViewPropTypes.style,
   }
 
   static defaultProps = {
@@ -51,16 +47,16 @@ class TagSelect extends React.Component {
     onMaxError: null,
     onItemPress: null,
 
-    containerStyle: {}
+    containerStyle: {},
   }
 
   state = {
-    value: {}
+    value: {},
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const value = {}
-    this.props.value.forEach((val) => {
+    this.props.value.forEach(val => {
       value[val[this.props.keyAttr] || val] = val
     })
 
@@ -71,7 +67,7 @@ class TagSelect extends React.Component {
    * @description Return the number of items selected
    * @return {Number}
    */
-  get totalSelected () {
+  get totalSelected() {
     return Object.keys(this.state.value).length
   }
 
@@ -79,7 +75,7 @@ class TagSelect extends React.Component {
    * @description Return the items selected
    * @return {Array}
    */
-  get itemsSelected () {
+  get itemsSelected() {
     const items = []
 
     Object.entries(this.state.value).forEach(([key]) => {
@@ -94,7 +90,7 @@ class TagSelect extends React.Component {
    * @param {Object} item
    * @return {Void}
    */
-  handleSelectItem = (item) => {
+  handleSelectItem = item => {
     const key = item[this.props.keyAttr] || item
 
     let value = { ...this.state.value }
@@ -105,17 +101,24 @@ class TagSelect extends React.Component {
       delete value[key]
     } else {
       // User is adding but has reached the max number permitted
-      if (this.props.max && this.totalSelected >= this.props.max && !this.props.onMaxSwitchToNext) {
+      if (
+        this.props.max &&
+        this.totalSelected >= this.props.max &&
+        !this.props.onMaxSwitchToNext
+      ) {
         if (this.props.onMaxError) {
           return this.props.onMaxError()
         }
-      } else if (this.props.max && this.totalSelected >= this.props.max && this.props.onMaxSwitchToNext) {
-        value = []; 
+      } else if (
+        this.props.max &&
+        this.totalSelected >= this.props.max &&
+        this.props.onMaxSwitchToNext
+      ) {
+        delete value[Object.keys(value)[0]] // remove the oldest item
         value[key] = item
       } else {
         value[key] = item
       }
-
     }
 
     return this.setState({ value }, () => {
@@ -125,22 +128,25 @@ class TagSelect extends React.Component {
     })
   }
 
-  render () {
+  render() {
     return (
-      <View
-        style={[
-          styles.container,
-          this.props.containerStyle
-        ]}
-      >
-        {this.props.data.map((i) => {
+      <View style={[styles.container, this.props.containerStyle]}>
+        {this.props.data.map(i => {
           return (
             <TagSelectItem
               {...this.props}
               label={i[this.props.labelAttr] ? i[this.props.labelAttr] : i}
               key={i[this.props.keyAttr] ? i[this.props.keyAttr] : i}
-              onPress={this.props.disabled ? () => {} : this.handleSelectItem.bind(this, i)}
-              selected={(this.state.value[i[this.props.keyAttr]] || this.state.value[i]) && true}
+              onPress={
+                this.props.disabled
+                  ? () => {}
+                  : this.handleSelectItem.bind(this, i)
+              }
+              selected={
+                (this.state.value[i[this.props.keyAttr]] ||
+                  this.state.value[i]) &&
+                true
+              }
             />
           )
         })}
@@ -153,8 +159,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-start'
-  }
+    alignItems: 'flex-start',
+  },
 })
 
 export default TagSelect
