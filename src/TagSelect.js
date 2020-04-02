@@ -40,7 +40,7 @@ class TagSelect extends React.Component {
     data: [],
 
     max: null,
-    onMaxSwitchToNext: false,
+    onMaxSwitchToNext: true,
 
     disabled: false,
 
